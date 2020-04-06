@@ -1,84 +1,116 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using PKHeX.Core;
+using static PKHeX.Core.MessageStrings;
 
 namespace PKHeX.WinForms
 {
     public partial class SAV_Inventory : Form
     {
-        public SAV_Inventory()
+        private readonly SaveFile Origin;
+        private readonly SaveFile SAV;
+
+        public SAV_Inventory(SaveFile sav)
         {
             InitializeComponent();
-            WinFormsUtil.TranslateInterface(this, Main.curlanguage);
-            if (SAV.Generation <= 3)
-                NUD_Count.Visible = L_Count.Visible = B_GiveAll.Visible = false;
-            itemlist = GameInfo.Strings.getItemStrings(SAV.Generation, SAV.Version);
+            WinFormsUtil.TranslateInterface(this, Main.CurrentLanguage);
+            SAV = (Origin = sav).Clone();
+            itemlist = GameInfo.Strings.GetItemStrings(SAV.Generation, SAV.Version).ToArray();
 
             for (int i = 0; i < itemlist.Length; i++)
-                if (itemlist[i] == "")
+            {
+                if (string.IsNullOrEmpty(itemlist[i]))
                     itemlist[i] = $"(Item #{i:000})";
+            }
 
-            HasFreeSpace = SAV.Generation == 7;
+            HasFreeSpace = SAV.Generation == 7 && !(SAV is SAV7b);
             HasNew = CHK_NEW.Visible = SAV.Generation == 7;
             Pouches = SAV.Inventory;
-            initBags();
-            getBags();
-            switchBag(null, null); // bag 0
+            CreateBagViews();
+            LoadAllBags();
+            ChangeViewedPouch(0);
         }
 
-        private readonly SaveFile SAV = Main.SAV.Clone();
         private readonly InventoryPouch[] Pouches;
-        private const string TabPrefix = "TAB_";
-        private const string DGVPrefix = "DGV_";
         private readonly bool HasFreeSpace;
         private readonly bool HasNew;
 
-        private void B_Cancel_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
+        // assume that all pouches have the same amount of columns
+        private int ColumnItem;
+        private int ColumnCount;
+        private int ColumnFreeSpace;
+        private int ColumnNEW;
+
+        private readonly Dictionary<InventoryType, DataGridView> ControlGrids = new Dictionary<InventoryType, DataGridView>();
+        private DataGridView GetGrid(InventoryType type) => ControlGrids[type];
+        private DataGridView GetGrid(int pouch) => ControlGrids[Pouches[pouch].Type];
+
+        private void B_Cancel_Click(object sender, EventArgs e) => Close();
+
         private void B_Save_Click(object sender, EventArgs e)
         {
-            setBags();
+            SetBags();
             SAV.Inventory = Pouches;
-            Array.Copy(SAV.Data, Main.SAV.Data, SAV.Data.Length);
-            Main.SAV.Edited = true;
+            Origin.CopyChangesFrom(SAV);
             Close();
         }
 
-        private void initBags()
+        private void CreateBagViews()
         {
             tabControl1.SizeMode = TabSizeMode.Fixed;
-            tabControl1.ItemSize = new Size(IL_Pouch.Images[0].Width + 4, 0);
-            for (int i = 0; i < Pouches.Length; i++)
+            tabControl1.ItemSize = new Size(IL_Pouch.Images[0].Width + 4, IL_Pouch.Images[0].Height + 4);
+            foreach (var pouch in Pouches)
             {
-                // Add Tab
-                tabControl1.TabPages.Add(new TabPage
-                {
-                    // Text = Pouches[i].Type.ToString(),
-                    ImageIndex = (int)Pouches[i].Type
-                });
-
-                tabControl1.TabPages[i].Controls.Add(getDGV(Pouches[i]));
+                var tab = new TabPage {ImageIndex = (int)pouch.Type};
+                var dgv = GetDGV(pouch);
+                ControlGrids.Add(pouch.Type, dgv);
+                tab.Controls.Add(dgv);
+                tabControl1.TabPages.Add(tab);
+                tabControl1.ShowToolTips = true;
+                tab.ToolTipText = pouch.Type.ToString();
             }
         }
-        private DataGridView getDGV(InventoryPouch pouch)
+
+        private DataGridView GetDGV(InventoryPouch pouch)
         {
             // Add DataGrid
-            DataGridView dgv = new DataGridView
+            var dgv = GetBaseDataGrid(pouch);
+
+            // Get Columns
+            var item = GetItemColumn(ColumnItem = dgv.Columns.Count);
+            dgv.Columns.Add(item);
+            dgv.Columns.Add(GetCountColumn(pouch, Main.HaX, ColumnCount = dgv.Columns.Count));
+            if (HasFreeSpace)
+                dgv.Columns.Add(GetFreeSpaceColumn(ColumnFreeSpace = dgv.Columns.Count));
+            if (HasNew)
+                dgv.Columns.Add(GetNewColumn(ColumnNEW = dgv.Columns.Count));
+
+            // Populate with rows
+            var itemarr = Main.HaX ? itemlist : GetStringsForPouch(pouch.LegalItems);
+            item.Items.AddRange(itemarr);
+
+            dgv.Rows.Add(pouch.Items.Length);
+            dgv.CancelEdit();
+
+            return dgv;
+        }
+
+        private static DataGridView GetBaseDataGrid(InventoryPouch pouch)
+        {
+            return new DataGridView
             {
                 Dock = DockStyle.Fill,
                 Text = pouch.Type.ToString(),
-                Name = DGVPrefix + pouch.Type,
+                Name = "DGV_" + pouch.Type,
 
                 AllowUserToAddRows = false,
                 AllowUserToDeleteRows = false,
                 AllowUserToResizeRows = false,
                 AllowUserToResizeColumns = false,
                 RowHeadersVisible = false,
-                //ColumnHeadersVisible = false,
                 MultiSelect = false,
                 ShowEditingIcon = false,
 
@@ -88,171 +120,167 @@ namespace PKHeX.WinForms
                 SelectionMode = DataGridViewSelectionMode.CellSelect,
                 CellBorderStyle = DataGridViewCellBorderStyle.None,
             };
+        }
 
-            int c = 0;
-            DataGridViewComboBoxColumn dgvItemVal = new DataGridViewComboBoxColumn
+        private static DataGridViewComboBoxColumn GetItemColumn(int c)
+        {
+            return new DataGridViewComboBoxColumn
             {
                 HeaderText = "Item",
                 DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing,
-                DisplayIndex = c++,
+                DisplayIndex = c,
                 Width = 135,
                 FlatStyle = FlatStyle.Flat
             };
-            DataGridViewColumn dgvIndex = new DataGridViewTextBoxColumn();
-            {
-                dgvIndex.HeaderText = "Count";
-                dgvIndex.DisplayIndex = c++;
-                dgvIndex.Width = 45;
-                dgvIndex.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            }
-
-            dgv.Columns.Add(dgvItemVal);
-            dgv.Columns.Add(dgvIndex);
-            
-            if (HasFreeSpace)
-            {
-                DataGridViewCheckBoxColumn dgvFree = new DataGridViewCheckBoxColumn
-                {
-                    HeaderText = "Free",
-                    DisplayIndex = c++,
-                    Width = 40,
-                    FlatStyle = FlatStyle.Flat
-                };
-                dgv.Columns.Add(dgvFree);
-            }
-            if (HasFreeSpace)
-            {
-                DataGridViewCheckBoxColumn dgvNew = new DataGridViewCheckBoxColumn
-                {
-                    HeaderText = "NEW",
-                    DisplayIndex = c++,
-                    Width = 40,
-                    FlatStyle = FlatStyle.Flat
-                };
-                dgv.Columns.Add(dgvNew);
-            }
-
-            var itemcount = pouch.Items.Length;
-            string[] itemarr = Main.HaX ? (string[])itemlist.Clone() : getItems(pouch.LegalItems);
-
-            var combo = dgv.Columns[0] as DataGridViewComboBoxColumn;
-            foreach (string t in itemarr)
-                combo.Items.Add(t); // add only the Item Names
-
-            dgv.Rows.Add(itemcount > 0 ? itemcount : itemarr.Length);
-            dgv.CancelEdit();
-
-            return dgv;
         }
-        private void getBags()
+
+        private static DataGridViewColumn GetCountColumn(InventoryPouch pouch, bool HaX, int c)
         {
-            foreach (InventoryPouch pouch in Pouches)
+            var dgvIndex = new DataGridViewTextBoxColumn
             {
-                DataGridView dgv = Controls.Find(DGVPrefix + pouch.Type, true).FirstOrDefault() as DataGridView;
+                HeaderText = "Count",
+                DisplayIndex = c,
+                Width = 45,
+                DefaultCellStyle = {Alignment = DataGridViewContentAlignment.MiddleCenter},
+            };
+            if (!HaX)
+                dgvIndex.MaxInputLength = (int)(Math.Log10(Math.Max(1, pouch.MaxCount)) + 1);
+            return dgvIndex;
+        }
+
+        private static DataGridViewColumn GetFreeSpaceColumn(int c)
+        {
+            return new DataGridViewCheckBoxColumn
+            {
+                HeaderText = "Free",
+                DisplayIndex = c,
+                Width = 40,
+                FlatStyle = FlatStyle.Flat
+            };
+        }
+
+        private static DataGridViewColumn GetNewColumn(int c)
+        {
+            return new DataGridViewCheckBoxColumn
+            {
+                HeaderText = "NEW",
+                DisplayIndex = c,
+                Width = 40,
+                FlatStyle = FlatStyle.Flat
+            };
+        }
+
+        private void LoadAllBags()
+        {
+            foreach (var pouch in Pouches)
+            {
+                var dgv = GetGrid(pouch.Type);
 
                 // Sanity Screen
                 var invalid = pouch.Items.Where(item => item.Index != 0 && !pouch.LegalItems.Contains((ushort)item.Index)).ToArray();
                 var outOfBounds = invalid.Where(item => item.Index >= itemlist.Length).ToArray();
                 var incorrectPouch = invalid.Where(item => item.Index < itemlist.Length).ToArray();
 
-                if (outOfBounds.Any())
-                    WinFormsUtil.Error("Unknown item detected.", "Item ID(s): " + string.Join(", ", outOfBounds.Select(item => item.Index)));
-                if (!Main.HaX && incorrectPouch.Any())
-                    WinFormsUtil.Alert($"The following item(s) have been removed from {pouch.Type} pouch.",
-                        string.Join(", ", incorrectPouch.Select(item => itemlist[item.Index])), 
-                        "If you save changes, the item(s) will no longer be in the pouch.");
+                if (outOfBounds.Length > 0)
+                    WinFormsUtil.Error(MsgItemPouchUnknown, $"Item ID(s): {string.Join(", ", outOfBounds.Select(item => item.Index))}");
+                if (!Main.HaX && incorrectPouch.Length > 0)
+                    WinFormsUtil.Alert(string.Format(MsgItemPouchRemoved, pouch.Type), string.Join(", ", incorrectPouch.Select(item => itemlist[item.Index])), MsgItemPouchWarning);
 
-                pouch.sanitizePouch(Main.HaX, itemlist.Length - 1);
-                getBag(dgv, pouch);
+                pouch.Sanitize(itemlist.Length - 1, Main.HaX);
+                GetBag(dgv, pouch);
             }
         }
-        private void setBags()
+
+        private void SetBags()
         {
-            foreach (InventoryPouch t in Pouches)
+            foreach (var pouch in Pouches)
             {
-                DataGridView dgv = Controls.Find(DGVPrefix + t.Type, true).FirstOrDefault() as DataGridView;
-                setBag(dgv, t);
+                var dgv = GetGrid(pouch.Type);
+                SetBag(dgv, pouch);
             }
         }
-        private void getBag(DataGridView dgv, InventoryPouch pouch)
+
+        private void GetBag(DataGridView dgv, InventoryPouch pouch)
         {
             for (int i = 0; i < dgv.Rows.Count; i++)
             {
-                int c = 0;
-                dgv.Rows[i].Cells[c++].Value = itemlist[pouch.Items[i].Index];
-                dgv.Rows[i].Cells[c++].Value = pouch.Items[i].Count;
+                var cells = dgv.Rows[i].Cells;
+                cells[ColumnItem].Value = itemlist[pouch.Items[i].Index];
+                cells[ColumnCount].Value = pouch.Items[i].Count;
                 if (HasFreeSpace)
-                    dgv.Rows[i].Cells[c++].Value = pouch.Items[i].FreeSpace;
+                    cells[ColumnFreeSpace].Value = pouch.Items[i].FreeSpace;
                 if (HasNew)
-                    dgv.Rows[i].Cells[c].Value = pouch.Items[i].New;
+                    cells[ColumnNEW].Value = pouch.Items[i].New;
             }
         }
-        private void setBag(DataGridView dgv, InventoryPouch pouch)
+
+        private void SetBag(DataGridView dgv, InventoryPouch pouch)
         {
             int ctr = 0;
             for (int i = 0; i < dgv.Rows.Count; i++)
             {
-                int c = 0;
-                string item = dgv.Rows[i].Cells[c++].Value.ToString();
-                int itemindex = Array.IndexOf(itemlist, item);
-                if (itemindex <= 0) // Compression of Empty Slots
+                var cells = dgv.Rows[i].Cells;
+                var str = cells[ColumnItem].Value.ToString();
+                var itemindex = Array.IndexOf(itemlist, str);
+
+                if (itemindex <= 0 && !HasNew) // Compression of Empty Slots
                     continue;
 
-                int itemcnt;
-                int.TryParse(dgv.Rows[i].Cells[c++].Value?.ToString(), out itemcnt);
-
-                if (Main.HaX && SAV.Generation != 7) // Gen7 has true cap at 1023, keep 999 cap.
-                {
-                    // Cap at absolute maximum
-                    if (SAV.Generation <= 2 && itemcnt > byte.MaxValue)
-                        itemcnt = byte.MaxValue;
-                    else if (SAV.Generation >= 3 && itemcnt > ushort.MaxValue)
-                        itemcnt = ushort.MaxValue;
-                }
-                else if (itemcnt > pouch.MaxCount)
-                {
-                    if (itemindex == 797 && itemcnt >= 2) // Edge case when for some reason the item count for Z-Ring was 2 in an unedited save and set 1 after using PKHeX
-                        itemcnt = 2;
-                    else
-                        itemcnt = pouch.MaxCount; // Cap at pouch maximum
-                }   
-                else if (itemcnt <= 0)
+                int.TryParse(cells[ColumnCount].Value?.ToString(), out int itemcnt);
+                if (!pouch.IsValidItemAndCount(SAV, itemindex, HasNew, Main.HaX, ref itemcnt))
                     continue; // ignore item
 
-                pouch.Items[ctr] = new InventoryItem { Index = itemindex, Count = itemcnt };
+                // create clean item data when saving
+                var obj = new InventoryItem {Index = itemindex, Count = itemcnt};
                 if (HasFreeSpace)
-                    pouch.Items[ctr].FreeSpace = (bool)dgv.Rows[i].Cells[c++].Value;
+                    obj.FreeSpace = (bool)cells[ColumnFreeSpace].Value;
                 if (HasNew)
-                    pouch.Items[ctr].New = (bool)dgv.Rows[i].Cells[c].Value;
+                    obj.New = (bool)cells[ColumnNEW].Value;
+                pouch.Items[ctr] = obj;
                 ctr++;
             }
             for (int i = ctr; i < pouch.Items.Length; i++)
                 pouch.Items[i] = new InventoryItem(); // Empty Slots at the end
         }
 
-        private void switchBag(object sender, EventArgs e)
+        private void ChangeViewedPouch(int index)
         {
-            int index = tabControl1.SelectedIndex;
             var pouch = Pouches[index];
-            if (Main.HaX)
-            {
-                // Cap at absolute maximum
-                if (SAV.Generation <= 2)
-                    NUD_Count.Maximum = byte.MaxValue;
-                else if (SAV.Generation >= 7)
-                    NUD_Count.Maximum = pouch.MaxCount;
-                else if (SAV.Generation >= 3)
-                    NUD_Count.Maximum = ushort.MaxValue;
-            }
-            else
-                NUD_Count.Maximum = pouch.MaxCount;
+            NUD_Count.Maximum = GetMax(SAV, pouch, Main.HaX);
 
-            NUD_Count.Value = pouch.Type == InventoryType.KeyItems ? 1 : pouch.MaxCount;
+            bool disable = pouch.Type == InventoryType.PCItems || pouch.Type == InventoryType.FreeSpace;
+            NUD_Count.Visible = L_Count.Visible = B_GiveAll.Visible = !disable;
+            if (disable && !Main.HaX)
+            {
+                giveMenu.Items.Remove(giveAll);
+                giveMenu.Items.Remove(giveModify);
+            }
+            else if (!giveMenu.Items.Contains(giveAll))
+            {
+                giveMenu.Items.Insert(0, giveAll);
+                giveMenu.Items.Add(giveModify);
+            }
+            NUD_Count.Value = Math.Max(1, pouch.MaxCount - 4);
+        }
+
+        private static int GetMax(ITrainerInfo sav, InventoryPouch pouch, bool haX)
+        {
+            if (haX)
+                return pouch.MaxCount;
+
+            // Cap at absolute maximum
+            if (sav.Generation <= 2)
+                return byte.MaxValue;
+            if (sav.Generation >= 7)
+                return pouch.MaxCount;
+            // if (SAV.Generation >= 3)
+            return ushort.MaxValue;
         }
 
         // Initialize String Tables
         private readonly string[] itemlist;
-        private string[] getItems(ushort[] items, bool sort = true)
+
+        private string[] GetStringsForPouch(ushort[] items, bool sort = true)
         {
             string[] res = new string[items.Length + 1];
             for (int i = 0; i < res.Length - 1; i++)
@@ -265,106 +293,75 @@ namespace PKHeX.WinForms
 
         // User Cheats
         private int CurrentPouch => tabControl1.SelectedIndex;
-        private void B_GiveAll_Click(object sender, EventArgs e)
+        private void SwitchBag(object sender, EventArgs e) => ChangeViewedPouch(CurrentPouch);
+        private void B_GiveAll_Click(object sender, EventArgs e) => ShowContextMenuBelow(giveMenu, (Control)sender);
+        private void B_Sort_Click(object sender, EventArgs e) => ShowContextMenuBelow(sortMenu, (Control)sender);
+
+        private void SortByName(object sender, EventArgs e) => ModifyPouch(CurrentPouch, p => p.SortByName(itemlist, reverse: sender == mnuSortNameReverse));
+        private void SortByCount(object sender, EventArgs e) => ModifyPouch(CurrentPouch, p => p.SortByCount(reverse: sender == mnuSortCountReverse));
+        private void SortByIndex(object sender, EventArgs e) => ModifyPouch(CurrentPouch, p => p.SortByIndex(reverse: sender == mnuSortIndexReverse));
+
+        private static void ShowContextMenuBelow(ToolStripDropDown c, Control n) => c.Show(n.PointToScreen(new Point(0, n.Height)));
+
+        private void GiveAllItems(object sender, EventArgs e)
         {
-            Button btn = (Button)sender;
-            giveMenu.Show(btn.PointToScreen(new Point(0, btn.Height)));
-        }
-        private void giveAllItems(object sender, EventArgs e)
-        {
-            // Get Current Pouch
-            int pouch = CurrentPouch;
-            if (pouch < 0)
+            var pouch = Pouches[CurrentPouch];
+            if (!GetModifySettings(pouch, out var truncate, out var shuffle))
                 return;
-            var p = Pouches[pouch];
-            ushort[] legalitems = p.LegalItems;
 
-            DataGridView dgv = Controls.Find(DGVPrefix + p.Type, true).FirstOrDefault() as DataGridView;
-            setBag(dgv, p);
-
-            int Count = (int)NUD_Count.Value;
-            for (int i = 0; i < legalitems.Length; i++)
+            var items = pouch.LegalItems;
+            if (truncate)
             {
-                int item = legalitems[i];
-                string itemname;
-                int c = Count;
-
-                // Override for HMs
-                switch (SAV.Generation)
-                {
-                    case 3: {
-                        itemname = itemlist[item];
-                        if (Legal.Pouch_HM_RS.Contains(legalitems[i])) c = 1;
-                        break;
-                    }
-                    default: {
-                        itemname = itemlist[item];
-                        if (new[] { 420, 421, 422, 423, 423, 424, 425, 426, 427, 737 }.Contains(legalitems[i])) c = 1;
-                        break;
-                    }
-                }
-
-                int l = 0;
-                dgv.Rows[i].Cells[l++].Value = itemname;
-                dgv.Rows[i].Cells[l++].Value = c;
-                var t = p.Items.FirstOrDefault(m => m.Index == item);
-
-                if (HasFreeSpace)
-                    dgv.Rows[i].Cells[l++].Value = t?.FreeSpace ?? false;
-                if (HasNew)
-                    dgv.Rows[i].Cells[l].Value = t?.New ?? CHK_NEW.Checked;
+                items = (ushort[])items.Clone();
+                if (shuffle)
+                    Util.Shuffle(items);
+                Array.Resize(ref items, pouch.Items.Length);
             }
+
+            ModifyPouch(CurrentPouch, p => p.GiveAllItems(SAV, items, (int)NUD_Count.Value));
             System.Media.SystemSounds.Asterisk.Play();
         }
-        private void removeAllItems(object sender, EventArgs e)
-        {
-            // Get Current Pouch
-            int pouch = CurrentPouch;
-            if (pouch < 0)
-                return;
 
-            DataGridView dgv = Controls.Find(DGVPrefix + Pouches[pouch].Type, true).FirstOrDefault() as DataGridView;
-            
-            for (int i = 0; i < dgv.RowCount; i++)
-            {
-                int c = 0;
-                dgv.Rows[i].Cells[c++].Value = itemlist[0];
-                dgv.Rows[i].Cells[c++].Value = 0;
-                if (HasFreeSpace)
-                    dgv.Rows[i].Cells[c++].Value = false;
-                if (HasNew)
-                    dgv.Rows[i].Cells[c].Value = false;
-            }
-            WinFormsUtil.Alert("Items cleared.");
-        }
-        private void B_Sort_Click(object sender, EventArgs e)
+        private static bool GetModifySettings(InventoryPouch pouch, out bool truncate, out bool shuffle)
         {
-            Button btn = (Button)sender;
-            sortMenu.Show(btn.PointToScreen(new Point(0, btn.Height)));
+            truncate = false;
+            shuffle = false;
+            if (!pouch.IsCramped)
+                return true;
+
+            var dr = WinFormsUtil.Prompt(MessageBoxButtons.YesNo, MsgItemPouchSizeSmall,
+                string.Format(MsgItemPouchRandom, Environment.NewLine));
+            if (dr == DialogResult.Cancel)
+                return false;
+            truncate = true;
+            if (dr == DialogResult.No)
+                shuffle = true;
+
+            return true;
         }
-        private void sortByName(object sender, EventArgs e)
+
+        private void RemoveAllItems(object sender, EventArgs e)
         {
-            int pouch = CurrentPouch;
-            var dgv = Controls.Find(DGVPrefix + Pouches[pouch].Type, true).FirstOrDefault() as DataGridView;
+            ModifyPouch(CurrentPouch, p => p.RemoveAll());
+            WinFormsUtil.Alert(MsgItemCleared);
+        }
+
+        private void ModifyAllItems(object sender, EventArgs e)
+        {
+            ModifyPouch(CurrentPouch, p => p.ModifyAllCount(SAV, (int)NUD_Count.Value));
+            WinFormsUtil.Alert(MsgItemPouchCountUpdated);
+        }
+
+        private void ModifyPouch(int pouch, Action<InventoryPouch> func)
+        {
+            if (func == null)
+                throw new ArgumentNullException(nameof(func));
+
+            var dgv = GetGrid(pouch);
             var p = Pouches[pouch];
-            setBag(dgv, p);
-            if (sender == mnuSortName)
-                p.sortName(itemlist, reverse:false);
-            if (sender == mnuSortNameReverse)
-                p.sortName(itemlist, reverse:true);
-            getBag(dgv, p);
-        }
-        private void sortByCount(object sender, EventArgs e)
-        {
-            int pouch = CurrentPouch;
-            var dgv = Controls.Find(DGVPrefix + Pouches[pouch].Type, true).FirstOrDefault() as DataGridView;
-            var p = Pouches[pouch];
-            setBag(dgv, p);
-            if (sender == mnuSortCount)
-                p.sortCount(reverse:false);
-            if (sender == mnuSortCountReverse)
-                p.sortCount(reverse:true);
-            getBag(dgv, p);
+            SetBag(dgv, p); // save current
+            func(p); // update
+            GetBag(dgv, p); // load current
         }
     }
 }

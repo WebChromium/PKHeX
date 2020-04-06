@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ErrorWindow));
             this.T_ExceptionDetails = new System.Windows.Forms.TextBox();
             this.L_Message = new System.Windows.Forms.Label();
             this.L_ProvideInfo = new System.Windows.Forms.Label();
@@ -78,7 +77,7 @@
             this.B_CopyToClipboard.TabIndex = 3;
             this.B_CopyToClipboard.Text = "Copy to Clipboard";
             this.B_CopyToClipboard.UseVisualStyleBackColor = true;
-            this.B_CopyToClipboard.Click += new System.EventHandler(this.btnCopyToClipboard_Click);
+            this.B_CopyToClipboard.Click += new System.EventHandler(this.ClickCopyException);
             // 
             // B_Abort
             // 
@@ -89,7 +88,7 @@
             this.B_Abort.TabIndex = 4;
             this.B_Abort.Text = "Abort";
             this.B_Abort.UseVisualStyleBackColor = true;
-            this.B_Abort.Click += new System.EventHandler(this.B_Abort_Click);
+            this.B_Abort.Click += new System.EventHandler(this.ClickAbort);
             // 
             // B_Continue
             // 
@@ -100,7 +99,7 @@
             this.B_Continue.TabIndex = 5;
             this.B_Continue.Text = "Continue";
             this.B_Continue.UseVisualStyleBackColor = true;
-            this.B_Continue.Click += new System.EventHandler(this.B_Continue_Click);
+            this.B_Continue.Click += new System.EventHandler(this.ClickContinue);
             // 
             // ErrorWindow
             // 
@@ -113,7 +112,7 @@
             this.Controls.Add(this.L_ProvideInfo);
             this.Controls.Add(this.L_Message);
             this.Controls.Add(this.T_ExceptionDetails);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::PKHeX.WinForms.Properties.Resources.Icon;
             this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(515, 275);
             this.Name = "ErrorWindow";

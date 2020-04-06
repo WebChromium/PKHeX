@@ -2,112 +2,137 @@
 using System.Linq;
 using System.Windows.Forms;
 using PKHeX.Core;
+using PKHeX.Drawing;
 
 namespace PKHeX.WinForms
 {
     public partial class SAV_BoxLayout : Form
     {
-        public SAV_BoxLayout(int box)
+        private readonly SaveFile Origin;
+        private readonly SaveFile SAV;
+
+        public SAV_BoxLayout(SaveFile sav, int box)
         {
             InitializeComponent();
-            WinFormsUtil.TranslateInterface(this, Main.curlanguage);
+            WinFormsUtil.TranslateInterface(this, Main.CurrentLanguage);
+            SAV = (Origin = sav).Clone();
             editing = true;
-            
-            // Repopulate Wallpaper names
-            CB_BG.Items.Clear();
 
+            if (!SAV.HasBoxWallpapers)
+                CB_BG.Visible = PAN_BG.Visible = false;
+            else if (!LoadWallpaperNames()) // Repopulate Wallpaper names
+                WinFormsUtil.Error("Box layout is not supported for this game.", "Please close the window.");
+
+            LoadBoxNames();
+            LoadFlags();
+            LoadUnlockedCount();
+
+            LB_BoxSelect.SelectedIndex = box;
+            TB_BoxName.MaxLength = SAV.Generation >= 6 ? 14 : 8;
+            editing = false;
+        }
+
+        private bool LoadWallpaperNames()
+        {
+            CB_BG.Items.Clear();
             switch (SAV.Generation)
             {
-                case 3:
-                    if (SAV.GameCube)
-                        goto default;
+                case 3 when SAV is SAV3:
                     CB_BG.Items.AddRange(GameInfo.Strings.wallpapernames.Take(16).ToArray());
-                    break;
+                    return true;
                 case 4:
                 case 5:
                 case 6:
                     CB_BG.Items.AddRange(GameInfo.Strings.wallpapernames);
-                    break;
+                    return true;
                 case 7:
                     CB_BG.Items.AddRange(GameInfo.Strings.wallpapernames.Take(16).ToArray());
-                    break;
+                    return true;
+                case 8:
+                    CB_BG.Items.AddRange(GameInfo.Strings.wallpapernames);
+                    return true;
                 default:
-                    WinFormsUtil.Error("Box layout is not supported for this game.", "Please close the window.");
-                    break;
+                    return false;
             }
+        }
 
-            // Go
+        private void LoadBoxNames()
+        {
             LB_BoxSelect.Items.Clear();
             for (int i = 0; i < SAV.BoxCount; i++)
-                LB_BoxSelect.Items.Add(SAV.getBoxName(i));
+                LB_BoxSelect.Items.Add(SAV.GetBoxName(i));
+        }
 
-            // Flags
-            byte[] flags = SAV.BoxFlags;
-            if (flags != null)
-            {
-                flagArr = new NumericUpDown[flags.Length];
-                for (int i = 0; i < flags.Length; i++)
-                {
-                    flagArr[i] = new NumericUpDown
-                    {
-                        Minimum = 0,
-                        Maximum = 255,
-                        Width = CB_Unlocked.Width - 5,
-                        Hexadecimal = true,
-                        Value = flags[i]
-                    };
-                    FLP_Flags.Controls.Add(flagArr[i]);
-                }
-            }
-            else
-            {
-                FLP_Flags.Visible = false;
-            }
-
-            // Unlocked
-            if (SAV.BoxesUnlocked > 0)
-            {
-                CB_Unlocked.Items.Clear();
-                for (int i = 0; i <= SAV.BoxCount; i++)
-                    CB_Unlocked.Items.Add(i);
-                CB_Unlocked.SelectedIndex = Math.Min(SAV.BoxCount, SAV.BoxesUnlocked);
-            }
-            else
+        private void LoadUnlockedCount()
+        {
+            if (SAV.BoxesUnlocked <= 0)
             {
                 FLP_Unlocked.Visible = L_Unlocked.Visible = CB_Unlocked.Visible = false;
+                return;
             }
-            LB_BoxSelect.SelectedIndex = box;
+            CB_Unlocked.Items.Clear();
+            int max = SAV.BoxCount;
+            for (int i = 0; i <= max; i++)
+                CB_Unlocked.Items.Add(i);
+            CB_Unlocked.SelectedIndex = Math.Min(max, SAV.BoxesUnlocked);
         }
 
-        private readonly NumericUpDown[] flagArr = new NumericUpDown[0];
-        private readonly SaveFile SAV = Main.SAV.Clone();
-        private bool editing;
-        private bool renameBox;
-        private void changeBox(object sender, EventArgs e)
+        private void LoadFlags()
         {
-            if (renameBox)
+            byte[] flags = SAV.BoxFlags;
+            if (flags.Length == 0)
+            {
+                FLP_Flags.Visible = false;
+                return;
+            }
+
+            flagArr = new NumericUpDown[flags.Length];
+            for (int i = 0; i < flags.Length; i++)
+            {
+                flagArr[i] = new NumericUpDown
+                {
+                    Minimum = 0,
+                    Maximum = 255,
+                    Width = CB_Unlocked.Width - 5,
+                    Hexadecimal = true,
+                    Value = flags[i]
+                };
+                FLP_Flags.Controls.Add(flagArr[i]);
+            }
+        }
+
+        private NumericUpDown[] flagArr = Array.Empty<NumericUpDown>();
+        private bool editing;
+        private bool renamingBox;
+
+        private void ChangeBox(object sender, EventArgs e)
+        {
+            if (renamingBox)
                 return;
             editing = true;
-            
-            CB_BG.SelectedIndex = SAV.getBoxWallpaper(LB_BoxSelect.SelectedIndex);
-            TB_BoxName.Text = SAV.getBoxName(LB_BoxSelect.SelectedIndex);
 
-            editing = false; 
+            CB_BG.SelectedIndex = Math.Min(CB_BG.Items.Count - 1, SAV.GetBoxWallpaper(LB_BoxSelect.SelectedIndex));
+            TB_BoxName.Text = SAV.GetBoxName(LB_BoxSelect.SelectedIndex);
+
+            editing = false;
         }
-        private void changeBoxDetails(object sender, EventArgs e)
+
+        private void ChangeBoxDetails(object sender, EventArgs e)
         {
             if (editing)
                 return;
 
-            renameBox = true;
-            SAV.setBoxName(LB_BoxSelect.SelectedIndex, TB_BoxName.Text);
+            renamingBox = true;
+            SAV.SetBoxName(LB_BoxSelect.SelectedIndex, TB_BoxName.Text);
             LB_BoxSelect.Items[LB_BoxSelect.SelectedIndex] = TB_BoxName.Text;
-            renameBox = false;
+            renamingBox = false;
         }
+
         private void B_Cancel_Click(object sender, EventArgs e)
         {
             Close();
         }
+
         private void B_Save_Click(object sender, EventArgs e)
         {
             if (flagArr.Length > 0)
@@ -115,19 +140,18 @@ namespace PKHeX.WinForms
             if (CB_Unlocked.Visible)
                 SAV.BoxesUnlocked = CB_Unlocked.SelectedIndex;
 
-            Main.SAV = SAV;
-            Main.SAV.Edited = true;
+            Origin.CopyChangesFrom(SAV);
             Close();
         }
 
-        private void changeBoxBG(object sender, EventArgs e)
+        private void ChangeBoxBackground(object sender, EventArgs e)
         {
             if (!editing)
-                SAV.setBoxWallpaper(LB_BoxSelect.SelectedIndex, CB_BG.SelectedIndex);
+                SAV.SetBoxWallpaper(LB_BoxSelect.SelectedIndex, CB_BG.SelectedIndex);
 
-            PAN_BG.BackgroundImage = BoxWallpaper.getWallpaper(SAV, CB_BG.SelectedIndex);
+            PAN_BG.BackgroundImage = SAV.WallpaperImage(LB_BoxSelect.SelectedIndex);
         }
-        
+
         private bool MoveItem(int direction)
         {
             // Checking selected item
@@ -138,7 +162,7 @@ namespace PKHeX.WinForms
             int newIndex = LB_BoxSelect.SelectedIndex + direction;
 
             // Checking bounds of the range
-            if (newIndex < 0 || newIndex >= LB_BoxSelect.Items.Count)
+            if ((uint)newIndex >= LB_BoxSelect.Items.Count)
                 return false; // Index out of range - nothing to do
 
             object selected = LB_BoxSelect.SelectedItem;
@@ -149,16 +173,16 @@ namespace PKHeX.WinForms
             LB_BoxSelect.Items.Insert(newIndex, selected);
             // Restore selection
             LB_BoxSelect.SetSelected(newIndex, true);
-            editing = renameBox = false;
+            editing = renamingBox = false;
 
             return true;
         }
 
-        private void moveBox(object sender, EventArgs e)
+        private void MoveBox(object sender, EventArgs e)
         {
             int index = LB_BoxSelect.SelectedIndex;
             int dir = sender == B_Up ? -1 : +1;
-            editing = renameBox = true;
+            editing = renamingBox = true;
             if (!MoveItem(dir))
             {
                 System.Media.SystemSounds.Asterisk.Play();
@@ -166,11 +190,14 @@ namespace PKHeX.WinForms
             else if (!SAV.SwapBox(index, index + dir)) // valid but locked
             {
                 MoveItem(-dir); // undo
-                WinFormsUtil.Alert("Locked slots prevent movement of box(es).");
+                WinFormsUtil.Alert("Locked/Team slots prevent movement of box(es).");
             }
             else
-                changeBox(null, null);
-            editing = renameBox = false;
+            {
+                ChangeBox(null, EventArgs.Empty);
+            }
+
+            editing = renamingBox = false;
         }
     }
 }

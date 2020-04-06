@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SAV_Pokebean));
             this.dgv = new System.Windows.Forms.DataGridView();
             this.B_Save = new System.Windows.Forms.Button();
             this.B_Cancel = new System.Windows.Forms.Button();
@@ -58,7 +57,7 @@
             this.dgv.ShowEditingIcon = false;
             this.dgv.Size = new System.Drawing.Size(200, 186);
             this.dgv.TabIndex = 11;
-            this.dgv.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dropclick);
+            this.dgv.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(SAV_Pokebean.DropClick);
             // 
             // B_Save
             // 
@@ -112,7 +111,7 @@
             this.Controls.Add(this.B_Cancel);
             this.Controls.Add(this.B_Save);
             this.Controls.Add(this.dgv);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::PKHeX.WinForms.Properties.Resources.Icon;
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(240, 750);
             this.MinimizeBox = false;

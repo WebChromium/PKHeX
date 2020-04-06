@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using PKHeX.Core;
 
@@ -6,22 +7,25 @@ namespace PKHeX.WinForms
 {
     public partial class SAV_Pokepuff : Form
     {
-        public SAV_Pokepuff()
+        private readonly IPokePuff SAV;
+
+        public SAV_Pokepuff(SaveFile sav)
         {
             InitializeComponent();
-            WinFormsUtil.TranslateInterface(this, Main.curlanguage);
+            WinFormsUtil.TranslateInterface(this, Main.CurrentLanguage);
+            SAV = (IPokePuff)sav;
 
-            pfa = GameInfo.Strings.puffs;
-            pfa[0] = "---";
-            Setup();
+            var puffs = SAV.Puff.Puffs;
+            Setup(puffs.Length);
+            LoadPuffs(puffs);
 
-            new ToolTip().SetToolTip(B_Sort, "Hold CTRL to reverse sort.");
-            new ToolTip().SetToolTip(B_All, "Hold CTRL to best instead of varied.");
+            toolTip1.SetToolTip(B_Sort, "Hold CTRL to reverse sort.");
+            toolTip2.SetToolTip(B_All, "Hold CTRL to best instead of varied.");
         }
 
-        private readonly SAV6 SAV = new SAV6(Main.SAV.Data);
-        private readonly string[] pfa;
-        private void Setup()
+        private readonly string[] pfa = GameInfo.Strings.puffs;
+
+        private void Setup(int rowCount)
         {
             dgv.Rows.Clear();
             dgv.Columns.Clear();
@@ -48,9 +52,11 @@ namespace PKHeX.WinForms
             }
             dgv.Columns.Add(dgvIndex);
             dgv.Columns.Add(dgvPuff);
+            dgv.Rows.Add(rowCount);
+        }
 
-            var Puffs = SAV.Puffs;
-            dgv.Rows.Add(Puffs.Length);
+        private void LoadPuffs(byte[] Puffs)
+        {
             for (int i = 0; i < Puffs.Length; i++)
             {
                 dgv.Rows[i].Cells[0].Value = (i + 1).ToString();
@@ -62,11 +68,12 @@ namespace PKHeX.WinForms
                 }
                 dgv.Rows[i].Cells[1].Value = pfa[puffval];
             }
-            MT_CNT.Text = SAV.PuffCount.ToString();
         }
-        private void dropclick(object sender, DataGridViewCellEventArgs e)
+
+        private void DropClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.ColumnIndex != 1) return;
+            if (e.ColumnIndex != 1)
+                return;
             ((ComboBox)((DataGridView) sender).EditingControl).DroppedDown = true;
         }
 
@@ -74,84 +81,42 @@ namespace PKHeX.WinForms
         {
             Close();
         }
+
         private void B_All_Click(object sender, EventArgs e)
         {
-            int[] plus10 = {21, 22};
-            byte[] newpuffs = new byte[100];
-
-            if (ModifierKeys == Keys.Control)
-                for (int i = 0; i < 100; i++)
-                    newpuffs[i] = (byte)plus10[Util.rnd32() & 1];
-            else
-            {
-                for (int i = 0; i < 100; i++)
-                    newpuffs[i] = (byte)(i % (pfa.Length - 1) + 1);
-                Util.Shuffle(newpuffs);
-            }
-
-            Array.Copy(newpuffs, 0, SAV.Data, SAV.Puff, 100);
-            Setup();
+            SAV.Puff.MaxCheat(ModifierKeys == Keys.Control);
+            LoadPuffs(SAV.Puff.Puffs);
         }
+
         private void B_None_Click(object sender, EventArgs e)
         {
-            byte[] newpuffs = new byte[100];
-            newpuffs[0] = 1;
-            newpuffs[1] = 2;
-            newpuffs[2] = 3;
-            newpuffs[3] = 4;
-            newpuffs[4] = 5;
-            Array.Copy(newpuffs, 0, SAV.Data, SAV.Puff, 100);
-            Setup();
+            SAV.Puff.Reset();
+            LoadPuffs(SAV.Puff.Puffs);
         }
+
         private void B_Sort_Click(object sender, EventArgs e)
         {
-            byte[] puffarray = new byte[100];
-            if (ModifierKeys == Keys.Control)
-            {
-                for (int i = 0; i < 100; i++)
-                {
-                    string puff = dgv.Rows[i].Cells[1].Value.ToString();
-                    puffarray[i] = (byte)Array.IndexOf(pfa, puff);
-                }
-                Array.Sort(puffarray);
-                Array.Reverse(puffarray);
-            }
-            else
-            {
-                int count = 0;
-                for (int i = 0; i < 100; i++)
-                {
-                    string puff = dgv.Rows[i].Cells[1].Value.ToString();
-                    byte puffval = (byte)Array.IndexOf(pfa, puff);
-                    if (puffval == 0) continue;
-                    puffarray[count] = puffval;
-                    count++;
-                }
-                Array.Resize(ref puffarray, count);
-                Array.Sort(puffarray);
-                Array.Resize(ref puffarray, 100);
-            }
-            Array.Copy(puffarray, 0, SAV.Data, SAV.Puff, 100);
-            Setup();
+            SAV.Puff.Sort(ModifierKeys == Keys.Control);
+            LoadPuffs(SAV.Puff.Puffs);
         }
-        private void B_Save_Click(object sender, EventArgs e)
+
+        private byte[] GetPuffs()
         {
-            byte[] puffarray = new byte[100];
-            int emptyslots = 0;
-            for (int i = 0; i < 100; i++)
+            var puffs = new List<byte>();
+            for (int i = 0; i < dgv.Rows.Count; i++)
             {
                 string puff = dgv.Rows[i].Cells[1].Value.ToString();
-                if (Array.IndexOf(pfa, puff) == 0)
-                {
-                    emptyslots++;
-                    continue;
-                }
-                puffarray[i - emptyslots] = (byte)Array.IndexOf(pfa, puff);
+                int index = (byte)Array.IndexOf(pfa, puff);
+                puffs.Add((byte)index);
             }
-            SAV.Puffs = puffarray;
-            SAV.PuffCount = Util.ToInt32(MT_CNT.Text);
-            Main.SAV.Data = SAV.Data;
-            Main.SAV.Edited = true;
+            return puffs.ToArray();
+        }
+
+        private void B_Save_Click(object sender, EventArgs e)
+        {
+            var puffs = GetPuffs();
+            SAV.Puff.Puffs = puffs;
+            SAV.Puff.PuffCount = puffs.Length;
             Close();
         }
     }

@@ -28,8 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SAV_SimpleTrainer));
             this.GB_Adventure = new System.Windows.Forms.GroupBox();
+            this.L_PikaBeach = new System.Windows.Forms.Label();
+            this.MT_PikaBeach = new System.Windows.Forms.MaskedTextBox();
+            this.L_PikaFriend = new System.Windows.Forms.Label();
+            this.MT_PikaFriend = new System.Windows.Forms.MaskedTextBox();
             this.L_Started = new System.Windows.Forms.Label();
             this.CAL_AdventureStartDate = new System.Windows.Forms.DateTimePicker();
             this.CAL_HoFDate = new System.Windows.Forms.DateTimePicker();
@@ -85,15 +88,13 @@
             this.CHK_2 = new System.Windows.Forms.CheckBox();
             this.CHK_1 = new System.Windows.Forms.CheckBox();
             this.GB_Options = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.LBL_SoundType = new System.Windows.Forms.Label();
             this.CB_SoundType = new System.Windows.Forms.ComboBox();
             this.LBL_TextSpeed = new System.Windows.Forms.Label();
             this.CB_TextSpeed = new System.Windows.Forms.ComboBox();
             this.LBL_BattleStyle = new System.Windows.Forms.Label();
             this.CB_BattleStyle = new System.Windows.Forms.ComboBox();
             this.CHK_BattleEffects = new System.Windows.Forms.CheckBox();
-            this.L_PikaFriend = new System.Windows.Forms.Label();
-            this.MT_PikaFriend = new System.Windows.Forms.MaskedTextBox();
             this.GB_Adventure.SuspendLayout();
             this.GB_Map.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NUD_Z)).BeginInit();
@@ -107,6 +108,8 @@
             // 
             // GB_Adventure
             // 
+            this.GB_Adventure.Controls.Add(this.L_PikaBeach);
+            this.GB_Adventure.Controls.Add(this.MT_PikaBeach);
             this.GB_Adventure.Controls.Add(this.L_PikaFriend);
             this.GB_Adventure.Controls.Add(this.MT_PikaFriend);
             this.GB_Adventure.Controls.Add(this.L_Started);
@@ -128,6 +131,49 @@
             this.GB_Adventure.TabStop = false;
             this.GB_Adventure.Text = "Adventure Info";
             // 
+            // L_PikaBeach
+            // 
+            this.L_PikaBeach.AutoSize = true;
+            this.L_PikaBeach.Location = new System.Drawing.Point(7, 68);
+            this.L_PikaBeach.Name = "L_PikaBeach";
+            this.L_PikaBeach.Size = new System.Drawing.Size(83, 13);
+            this.L_PikaBeach.TabIndex = 75;
+            this.L_PikaBeach.Text = "Pikachu Beach:";
+            this.L_PikaBeach.Visible = false;
+            // 
+            // MT_PikaBeach
+            // 
+            this.MT_PikaBeach.Location = new System.Drawing.Point(111, 64);
+            this.MT_PikaBeach.Mask = "0000";
+            this.MT_PikaBeach.Name = "MT_PikaBeach";
+            this.MT_PikaBeach.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.MT_PikaBeach.Size = new System.Drawing.Size(39, 20);
+            this.MT_PikaBeach.TabIndex = 74;
+            this.MT_PikaBeach.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.MT_PikaBeach.Visible = false;
+            // 
+            // L_PikaFriend
+            // 
+            this.L_PikaFriend.AutoSize = true;
+            this.L_PikaFriend.Location = new System.Drawing.Point(7, 44);
+            this.L_PikaFriend.Name = "L_PikaFriend";
+            this.L_PikaFriend.Size = new System.Drawing.Size(100, 13);
+            this.L_PikaFriend.TabIndex = 73;
+            this.L_PikaFriend.Text = "Pikachu Friendship:";
+            this.L_PikaFriend.Visible = false;
+            // 
+            // MT_PikaFriend
+            // 
+            this.MT_PikaFriend.Location = new System.Drawing.Point(111, 40);
+            this.MT_PikaFriend.Mask = "000";
+            this.MT_PikaFriend.Name = "MT_PikaFriend";
+            this.MT_PikaFriend.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.MT_PikaFriend.Size = new System.Drawing.Size(39, 20);
+            this.MT_PikaFriend.TabIndex = 72;
+            this.MT_PikaFriend.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.MT_PikaFriend.Visible = false;
+            this.MT_PikaFriend.TextChanged += new System.EventHandler(this.Change255);
+            // 
             // L_Started
             // 
             this.L_Started.Location = new System.Drawing.Point(4, 51);
@@ -141,7 +187,7 @@
             // 
             this.CAL_AdventureStartDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.CAL_AdventureStartDate.Location = new System.Drawing.Point(90, 51);
-            this.CAL_AdventureStartDate.MaxDate = new System.DateTime(2050, 12, 31, 0, 0, 0, 0);
+            this.CAL_AdventureStartDate.MaxDate = new System.DateTime(4095, 12, 31, 0, 0, 0, 0);
             this.CAL_AdventureStartDate.MinDate = new System.DateTime(2000, 1, 1, 0, 0, 0, 0);
             this.CAL_AdventureStartDate.Name = "CAL_AdventureStartDate";
             this.CAL_AdventureStartDate.Size = new System.Drawing.Size(99, 20);
@@ -223,10 +269,10 @@
             // 
             // CAL_AdventureStartTime
             // 
-            this.CAL_AdventureStartTime.CustomFormat = "hh:mm tt";
+            this.CAL_AdventureStartTime.CustomFormat = "HH:mm:ss";
             this.CAL_AdventureStartTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.CAL_AdventureStartTime.Location = new System.Drawing.Point(116, 70);
-            this.CAL_AdventureStartTime.MaxDate = new System.DateTime(2050, 12, 31, 0, 0, 0, 0);
+            this.CAL_AdventureStartTime.MaxDate = new System.DateTime(4095, 12, 31, 0, 0, 0, 0);
             this.CAL_AdventureStartTime.MinDate = new System.DateTime(2000, 1, 1, 0, 0, 0, 0);
             this.CAL_AdventureStartTime.Name = "CAL_AdventureStartTime";
             this.CAL_AdventureStartTime.ShowUpDown = true;
@@ -236,10 +282,10 @@
             // 
             // CAL_HoFTime
             // 
-            this.CAL_HoFTime.CustomFormat = "hh:mm tt";
+            this.CAL_HoFTime.CustomFormat = "HH:mm:ss";
             this.CAL_HoFTime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.CAL_HoFTime.Location = new System.Drawing.Point(116, 126);
-            this.CAL_HoFTime.MaxDate = new System.DateTime(2050, 12, 31, 0, 0, 0, 0);
+            this.CAL_HoFTime.MaxDate = new System.DateTime(4095, 12, 31, 0, 0, 0, 0);
             this.CAL_HoFTime.MinDate = new System.DateTime(2000, 1, 1, 0, 0, 0, 0);
             this.CAL_HoFTime.Name = "CAL_HoFTime";
             this.CAL_HoFTime.ShowUpDown = true;
@@ -325,7 +371,7 @@
             this.MT_TID.Size = new System.Drawing.Size(39, 20);
             this.MT_TID.TabIndex = 63;
             this.MT_TID.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.MT_TID.TextChanged += new System.EventHandler(this.changeFFFF);
+            this.MT_TID.TextChanged += new System.EventHandler(this.ChangeFFFF);
             // 
             // MT_SID
             // 
@@ -336,7 +382,7 @@
             this.MT_SID.Size = new System.Drawing.Size(39, 20);
             this.MT_SID.TabIndex = 64;
             this.MT_SID.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.MT_SID.TextChanged += new System.EventHandler(this.changeFFFF);
+            this.MT_SID.TextChanged += new System.EventHandler(this.ChangeFFFF);
             // 
             // B_MaxCash
             // 
@@ -380,7 +426,7 @@
             this.NUD_Z.Name = "NUD_Z";
             this.NUD_Z.Size = new System.Drawing.Size(50, 20);
             this.NUD_Z.TabIndex = 53;
-            this.NUD_Z.ValueChanged += new System.EventHandler(this.changeMapValue);
+            this.NUD_Z.ValueChanged += new System.EventHandler(this.ChangeMapValue);
             // 
             // NUD_M
             // 
@@ -393,7 +439,7 @@
             this.NUD_M.Name = "NUD_M";
             this.NUD_M.Size = new System.Drawing.Size(50, 20);
             this.NUD_M.TabIndex = 52;
-            this.NUD_M.ValueChanged += new System.EventHandler(this.changeMapValue);
+            this.NUD_M.ValueChanged += new System.EventHandler(this.ChangeMapValue);
             // 
             // NUD_Y
             // 
@@ -406,7 +452,7 @@
             this.NUD_Y.Name = "NUD_Y";
             this.NUD_Y.Size = new System.Drawing.Size(50, 20);
             this.NUD_Y.TabIndex = 51;
-            this.NUD_Y.ValueChanged += new System.EventHandler(this.changeMapValue);
+            this.NUD_Y.ValueChanged += new System.EventHandler(this.ChangeMapValue);
             // 
             // NUD_X
             // 
@@ -419,7 +465,7 @@
             this.NUD_X.Name = "NUD_X";
             this.NUD_X.Size = new System.Drawing.Size(50, 20);
             this.NUD_X.TabIndex = 50;
-            this.NUD_X.ValueChanged += new System.EventHandler(this.changeMapValue);
+            this.NUD_X.ValueChanged += new System.EventHandler(this.ChangeMapValue);
             // 
             // L_Y
             // 
@@ -717,7 +763,7 @@
             // 
             // GB_Options
             // 
-            this.GB_Options.Controls.Add(this.label1);
+            this.GB_Options.Controls.Add(this.LBL_SoundType);
             this.GB_Options.Controls.Add(this.CB_SoundType);
             this.GB_Options.Controls.Add(this.LBL_TextSpeed);
             this.GB_Options.Controls.Add(this.CB_TextSpeed);
@@ -732,14 +778,14 @@
             this.GB_Options.Text = "Options";
             this.GB_Options.Visible = false;
             // 
-            // label1
+            // LBL_SoundType
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 71);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(68, 13);
-            this.label1.TabIndex = 25;
-            this.label1.Text = "Sound Type:";
+            this.LBL_SoundType.AutoSize = true;
+            this.LBL_SoundType.Location = new System.Drawing.Point(3, 71);
+            this.LBL_SoundType.Name = "LBL_SoundType";
+            this.LBL_SoundType.Size = new System.Drawing.Size(68, 13);
+            this.LBL_SoundType.TabIndex = 25;
+            this.LBL_SoundType.Text = "Sound Type:";
             // 
             // CB_SoundType
             // 
@@ -796,27 +842,6 @@
             this.CHK_BattleEffects.Text = "Use Battle Effects";
             this.CHK_BattleEffects.UseVisualStyleBackColor = true;
             // 
-            // L_PikaFriend
-            // 
-            this.L_PikaFriend.AutoSize = true;
-            this.L_PikaFriend.Location = new System.Drawing.Point(7, 44);
-            this.L_PikaFriend.Name = "L_PikaFriend";
-            this.L_PikaFriend.Size = new System.Drawing.Size(100, 13);
-            this.L_PikaFriend.TabIndex = 73;
-            this.L_PikaFriend.Text = "Pikachu Friendship:";
-            this.L_PikaFriend.Visible = false;
-            // 
-            // MT_PikaFriend
-            // 
-            this.MT_PikaFriend.Location = new System.Drawing.Point(111, 40);
-            this.MT_PikaFriend.Mask = "000";
-            this.MT_PikaFriend.Name = "MT_PikaFriend";
-            this.MT_PikaFriend.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.MT_PikaFriend.Size = new System.Drawing.Size(39, 20);
-            this.MT_PikaFriend.TabIndex = 72;
-            this.MT_PikaFriend.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.MT_PikaFriend.Visible = false;
-            // 
             // SAV_SimpleTrainer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -829,7 +854,7 @@
             this.Controls.Add(this.B_Cancel);
             this.Controls.Add(this.GB_Map);
             this.Controls.Add(this.GB_Adventure);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::PKHeX.WinForms.Properties.Resources.Icon;
             this.MinimumSize = new System.Drawing.Size(400, 300);
             this.Name = "SAV_SimpleTrainer";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -909,7 +934,7 @@
         private System.Windows.Forms.Label L_Coins;
         private System.Windows.Forms.MaskedTextBox MT_Coins;
         private System.Windows.Forms.GroupBox GB_Options;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label LBL_SoundType;
         private System.Windows.Forms.ComboBox CB_SoundType;
         private System.Windows.Forms.Label LBL_TextSpeed;
         private System.Windows.Forms.ComboBox CB_TextSpeed;
@@ -918,5 +943,7 @@
         private System.Windows.Forms.CheckBox CHK_BattleEffects;
         private System.Windows.Forms.Label L_PikaFriend;
         private System.Windows.Forms.MaskedTextBox MT_PikaFriend;
+        private System.Windows.Forms.Label L_PikaBeach;
+        private System.Windows.Forms.MaskedTextBox MT_PikaBeach;
     }
 }

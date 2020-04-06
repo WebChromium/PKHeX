@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 using PKHeX.Core;
 
@@ -7,71 +6,61 @@ namespace PKHeX.WinForms
 {
     public partial class SAV_Pokebean : Form
     {
-        public SAV_Pokebean()
+        public SAV_Pokebean(SaveFile sav)
         {
             InitializeComponent();
-            WinFormsUtil.TranslateInterface(this, Main.curlanguage);
+            WinFormsUtil.TranslateInterface(this, Main.CurrentLanguage);
+            SAV = (SAV7)(Origin = sav).Clone();
 
-            var colors = new[] {"Red", "Blue", "Light Blue", "Green", "Yellow", "Purple", "Orange"};
-            var beans = new List<string>();
-            foreach (var color in colors)
-            {
-                beans.Add($"{color} Bean");
-            }
-            foreach (var color in colors)
-            {
-                beans.Add($"{color} Patterned Bean");
-            }
-            beans.Add("Rainbow Bean");
-            beanlist = beans.ToArray();
-
-            Setup();
+            InitializeGrid();
+            Pouch = new BeanPouch(SAV);
+            LoadValues();
         }
 
-        private int MaxBeanID = 14;
+        private readonly BeanPouch Pouch;
 
-        private readonly SAV7 SAV = new SAV7(Main.SAV.Data);
-        private readonly string[] beanlist;
-        private void Setup()
+        private readonly SaveFile Origin;
+        private readonly SAV7 SAV;
+
+        private void LoadValues()
         {
             dgv.Rows.Clear();
-            dgv.Columns.Clear();
 
-            DataGridViewColumn dgvBean = new DataGridViewTextBoxColumn();
+            var beans = Pouch.Beans;
+            dgv.Rows.Add(beans.Length);
+            for (int i = 0; i < beans.Length; i++)
             {
-                dgvBean.HeaderText = "Slot";
-                dgvBean.DisplayIndex = 0;
-                dgvBean.Width = 135;
-                dgvBean.ReadOnly = true;
-                dgvBean.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            }
-            DataGridViewComboBoxColumn dgvCount = new DataGridViewComboBoxColumn
-            {
-                DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing,
-                DisplayIndex = 0,
-                Width = 135,
-                FlatStyle = FlatStyle.Flat,
-                ValueType = typeof(int)
-            };
-            {
-                for (var i = 0; i < 256; i++)
-                    dgvCount.Items.Add(i);
-
-                dgvCount.DisplayIndex = 1;
-                dgvCount.Width = 45;
-                dgvCount.FlatStyle = FlatStyle.Flat;
-            }
-            dgv.Columns.Add(dgvBean);
-            dgv.Columns.Add(dgvCount);
-
-            dgv.Rows.Add(MaxBeanID + 1);
-            for (int i = 0; i <= MaxBeanID; i++)
-            {
-                dgv.Rows[i].Cells[0].Value = beanlist[i];
-                dgv.Rows[i].Cells[1].Value = SAV.GetPokebeanCount(i);
+                dgv.Rows[i].Cells[0].Value = BeanPouch.BeanIndexNames[i];
+                dgv.Rows[i].Cells[1].Value = beans[i];
             }
         }
-        private void dropclick(object sender, DataGridViewCellEventArgs e)
+
+        private void InitializeGrid()
+        {
+            var dgvBean = new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Slot",
+                DisplayIndex = 0,
+                Width = 135,
+                ReadOnly = true,
+                DefaultCellStyle = {Alignment = DataGridViewContentAlignment.MiddleCenter}
+            };
+            var dgvCount = new DataGridViewComboBoxColumn
+            {
+                DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing,
+                FlatStyle = FlatStyle.Flat,
+                ValueType = typeof(int),
+                DisplayIndex = 1,
+                Width = 45
+            };
+            for (var i = 0; i < 256; i++)
+                dgvCount.Items.Add(i);
+
+            dgv.Columns.Add(dgvBean);
+            dgv.Columns.Add(dgvCount);
+        }
+
+        private static void DropClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex != 1) return;
             ((ComboBox)((DataGridView) sender).EditingControl).DroppedDown = true;
@@ -81,25 +70,28 @@ namespace PKHeX.WinForms
         {
             Close();
         }
+
         private void B_All_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i <= MaxBeanID; i++)
-                SAV.SetPokebeanCount(i, 255);
-            Setup();
+            Pouch.SetCountAll(255);
+            LoadValues();
+            System.Media.SystemSounds.Asterisk.Play();
         }
+
         private void B_None_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i <= MaxBeanID; i++)
-                SAV.SetPokebeanCount(i, 0);
-            Setup();
+            Pouch.SetCountAll(0);
+            LoadValues();
+            System.Media.SystemSounds.Asterisk.Play();
         }
-    
+
         private void B_Save_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i <= MaxBeanID; i++)
-                SAV.SetPokebeanCount(i, (int)dgv.Rows[i].Cells[1].Value);
-            Main.SAV.Data = SAV.Data;
-            Main.SAV.Edited = true;
+            var beans = Pouch.Beans;
+            for (int i = 0; i < beans.Length; i++)
+                beans[i] = (int)dgv.Rows[i].Cells[1].Value;
+            Pouch.Beans = beans;
+            Origin.CopyChangesFrom(SAV);
             Close();
         }
     }

@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SAV_BoxLayout));
             this.LB_BoxSelect = new System.Windows.Forms.ListBox();
             this.TB_BoxName = new System.Windows.Forms.TextBox();
             this.L_BoxName = new System.Windows.Forms.Label();
@@ -60,7 +59,7 @@
             this.LB_BoxSelect.Name = "LB_BoxSelect";
             this.LB_BoxSelect.Size = new System.Drawing.Size(111, 290);
             this.LB_BoxSelect.TabIndex = 0;
-            this.LB_BoxSelect.SelectedIndexChanged += new System.EventHandler(this.changeBox);
+            this.LB_BoxSelect.SelectedIndexChanged += new System.EventHandler(this.ChangeBox);
             // 
             // TB_BoxName
             // 
@@ -70,7 +69,7 @@
             this.TB_BoxName.Size = new System.Drawing.Size(136, 20);
             this.TB_BoxName.TabIndex = 1;
             this.TB_BoxName.WordWrap = false;
-            this.TB_BoxName.TextChanged += new System.EventHandler(this.changeBoxDetails);
+            this.TB_BoxName.TextChanged += new System.EventHandler(this.ChangeBoxDetails);
             // 
             // L_BoxName
             // 
@@ -112,7 +111,7 @@
             this.CB_BG.Name = "CB_BG";
             this.CB_BG.Size = new System.Drawing.Size(98, 21);
             this.CB_BG.TabIndex = 13;
-            this.CB_BG.SelectedIndexChanged += new System.EventHandler(this.changeBoxBG);
+            this.CB_BG.SelectedIndexChanged += new System.EventHandler(this.ChangeBoxBackground);
             // 
             // PAN_BG
             // 
@@ -189,7 +188,7 @@
             this.B_Up.TabIndex = 16;
             this.B_Up.Text = "^";
             this.B_Up.UseVisualStyleBackColor = true;
-            this.B_Up.Click += new System.EventHandler(this.moveBox);
+            this.B_Up.Click += new System.EventHandler(this.MoveBox);
             // 
             // B_Down
             // 
@@ -199,7 +198,7 @@
             this.B_Down.TabIndex = 17;
             this.B_Down.Text = "v";
             this.B_Down.UseVisualStyleBackColor = true;
-            this.B_Down.Click += new System.EventHandler(this.moveBox);
+            this.B_Down.Click += new System.EventHandler(this.MoveBox);
             // 
             // SAV_BoxLayout
             // 
@@ -217,7 +216,7 @@
             this.Controls.Add(this.TB_BoxName);
             this.Controls.Add(this.LB_BoxSelect);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::PKHeX.WinForms.Properties.Resources.Icon;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SAV_BoxLayout";
