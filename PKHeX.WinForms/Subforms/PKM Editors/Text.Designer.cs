@@ -1,6 +1,6 @@
-﻿namespace PKHeX.WinForms
+namespace PKHeX.WinForms
 {
-    partial class f2_Text
+    partial class TrashEditor
     {
         /// <summary>
         /// Required designer variable.
@@ -13,7 +13,7 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing && (components is not null))
             {
                 components.Dispose();
             }
@@ -28,411 +28,250 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(f2_Text));
-            this.L04 = new System.Windows.Forms.Label();
-            this.L0C = new System.Windows.Forms.Label();
-            this.L0D = new System.Windows.Forms.Label();
-            this.L05 = new System.Windows.Forms.Label();
-            this.L0E = new System.Windows.Forms.Label();
-            this.L06 = new System.Windows.Forms.Label();
-            this.L0F = new System.Windows.Forms.Label();
-            this.L07 = new System.Windows.Forms.Label();
-            this.L1E = new System.Windows.Forms.Label();
-            this.L16 = new System.Windows.Forms.Label();
-            this.L1F = new System.Windows.Forms.Label();
-            this.L17 = new System.Windows.Forms.Label();
-            this.L18 = new System.Windows.Forms.Label();
-            this.L10 = new System.Windows.Forms.Label();
-            this.L19 = new System.Windows.Forms.Label();
-            this.L11 = new System.Windows.Forms.Label();
-            this.L0B = new System.Windows.Forms.Label();
-            this.L03 = new System.Windows.Forms.Label();
-            this.L0A = new System.Windows.Forms.Label();
-            this.L02 = new System.Windows.Forms.Label();
-            this.L09 = new System.Windows.Forms.Label();
-            this.L01 = new System.Windows.Forms.Label();
-            this.L08 = new System.Windows.Forms.Label();
-            this.L00 = new System.Windows.Forms.Label();
-            this.L1B = new System.Windows.Forms.Label();
-            this.L13 = new System.Windows.Forms.Label();
-            this.L1A = new System.Windows.Forms.Label();
-            this.L12 = new System.Windows.Forms.Label();
-            this.L1D = new System.Windows.Forms.Label();
-            this.L15 = new System.Windows.Forms.Label();
-            this.L1C = new System.Windows.Forms.Label();
-            this.L14 = new System.Windows.Forms.Label();
-            this.SuspendLayout();
-            // 
-            // L04
-            // 
-            this.L04.AutoSize = true;
-            this.L04.Location = new System.Drawing.Point(92, 12);
-            this.L04.Name = "L04";
-            this.L04.Size = new System.Drawing.Size(14, 13);
-            this.L04.TabIndex = 3;
-            this.L04.Text = "X";
-            // 
-            // L0C
-            // 
-            this.L0C.AutoSize = true;
-            this.L0C.Location = new System.Drawing.Point(92, 34);
-            this.L0C.Name = "L0C";
-            this.L0C.Size = new System.Drawing.Size(14, 13);
-            this.L0C.TabIndex = 4;
-            this.L0C.Text = "X";
-            // 
-            // L0D
-            // 
-            this.L0D.AutoSize = true;
-            this.L0D.Location = new System.Drawing.Point(112, 34);
-            this.L0D.Name = "L0D";
-            this.L0D.Size = new System.Drawing.Size(14, 13);
-            this.L0D.TabIndex = 6;
-            this.L0D.Text = "X";
-            // 
-            // L05
-            // 
-            this.L05.AutoSize = true;
-            this.L05.Location = new System.Drawing.Point(112, 12);
-            this.L05.Name = "L05";
-            this.L05.Size = new System.Drawing.Size(14, 13);
-            this.L05.TabIndex = 5;
-            this.L05.Text = "X";
-            // 
-            // L0E
-            // 
-            this.L0E.AutoSize = true;
-            this.L0E.Location = new System.Drawing.Point(132, 34);
-            this.L0E.Name = "L0E";
-            this.L0E.Size = new System.Drawing.Size(14, 13);
-            this.L0E.TabIndex = 8;
-            this.L0E.Text = "X";
-            // 
-            // L06
-            // 
-            this.L06.AutoSize = true;
-            this.L06.Location = new System.Drawing.Point(132, 12);
-            this.L06.Name = "L06";
-            this.L06.Size = new System.Drawing.Size(14, 13);
-            this.L06.TabIndex = 7;
-            this.L06.Text = "X";
-            // 
-            // L0F
-            // 
-            this.L0F.AutoSize = true;
-            this.L0F.Location = new System.Drawing.Point(152, 34);
-            this.L0F.Name = "L0F";
-            this.L0F.Size = new System.Drawing.Size(14, 13);
-            this.L0F.TabIndex = 10;
-            this.L0F.Text = "X";
-            // 
-            // L07
-            // 
-            this.L07.AutoSize = true;
-            this.L07.Location = new System.Drawing.Point(152, 12);
-            this.L07.Name = "L07";
-            this.L07.Size = new System.Drawing.Size(14, 13);
-            this.L07.TabIndex = 9;
-            this.L07.Text = "X";
-            // 
-            // L1E
-            // 
-            this.L1E.AutoSize = true;
-            this.L1E.Location = new System.Drawing.Point(132, 81);
-            this.L1E.Name = "L1E";
-            this.L1E.Size = new System.Drawing.Size(14, 13);
-            this.L1E.TabIndex = 12;
-            this.L1E.Text = "X";
-            // 
-            // L16
-            // 
-            this.L16.AutoSize = true;
-            this.L16.Location = new System.Drawing.Point(132, 59);
-            this.L16.Name = "L16";
-            this.L16.Size = new System.Drawing.Size(14, 13);
-            this.L16.TabIndex = 11;
-            this.L16.Text = "X";
-            // 
-            // L1F
-            // 
-            this.L1F.AutoSize = true;
-            this.L1F.Location = new System.Drawing.Point(152, 81);
-            this.L1F.Name = "L1F";
-            this.L1F.Size = new System.Drawing.Size(14, 13);
-            this.L1F.TabIndex = 14;
-            this.L1F.Text = "X";
-            // 
-            // L17
-            // 
-            this.L17.AutoSize = true;
-            this.L17.Location = new System.Drawing.Point(152, 59);
-            this.L17.Name = "L17";
-            this.L17.Size = new System.Drawing.Size(14, 13);
-            this.L17.TabIndex = 13;
-            this.L17.Text = "X";
-            // 
-            // L18
-            // 
-            this.L18.AutoSize = true;
-            this.L18.Location = new System.Drawing.Point(12, 81);
-            this.L18.Name = "L18";
-            this.L18.Size = new System.Drawing.Size(14, 13);
-            this.L18.TabIndex = 16;
-            this.L18.Text = "X";
-            // 
-            // L10
-            // 
-            this.L10.AutoSize = true;
-            this.L10.Location = new System.Drawing.Point(12, 59);
-            this.L10.Name = "L10";
-            this.L10.Size = new System.Drawing.Size(14, 13);
-            this.L10.TabIndex = 15;
-            this.L10.Text = "X";
-            // 
-            // L19
-            // 
-            this.L19.AutoSize = true;
-            this.L19.Location = new System.Drawing.Point(32, 81);
-            this.L19.Name = "L19";
-            this.L19.Size = new System.Drawing.Size(14, 13);
-            this.L19.TabIndex = 18;
-            this.L19.Text = "X";
-            // 
-            // L11
-            // 
-            this.L11.AutoSize = true;
-            this.L11.Location = new System.Drawing.Point(32, 59);
-            this.L11.Name = "L11";
-            this.L11.Size = new System.Drawing.Size(14, 13);
-            this.L11.TabIndex = 17;
-            this.L11.Text = "X";
-            // 
-            // L0B
-            // 
-            this.L0B.AutoSize = true;
-            this.L0B.Location = new System.Drawing.Point(72, 34);
-            this.L0B.Name = "L0B";
-            this.L0B.Size = new System.Drawing.Size(14, 13);
-            this.L0B.TabIndex = 26;
-            this.L0B.Text = "X";
-            // 
-            // L03
-            // 
-            this.L03.AutoSize = true;
-            this.L03.Location = new System.Drawing.Point(72, 12);
-            this.L03.Name = "L03";
-            this.L03.Size = new System.Drawing.Size(14, 13);
-            this.L03.TabIndex = 25;
-            this.L03.Text = "X";
-            // 
-            // L0A
-            // 
-            this.L0A.AutoSize = true;
-            this.L0A.Location = new System.Drawing.Point(52, 34);
-            this.L0A.Name = "L0A";
-            this.L0A.Size = new System.Drawing.Size(14, 13);
-            this.L0A.TabIndex = 24;
-            this.L0A.Text = "X";
-            // 
-            // L02
-            // 
-            this.L02.AutoSize = true;
-            this.L02.Location = new System.Drawing.Point(52, 12);
-            this.L02.Name = "L02";
-            this.L02.Size = new System.Drawing.Size(14, 13);
-            this.L02.TabIndex = 23;
-            this.L02.Text = "X";
-            // 
-            // L09
-            // 
-            this.L09.AutoSize = true;
-            this.L09.Location = new System.Drawing.Point(32, 34);
-            this.L09.Name = "L09";
-            this.L09.Size = new System.Drawing.Size(14, 13);
-            this.L09.TabIndex = 22;
-            this.L09.Text = "X";
-            // 
-            // L01
-            // 
-            this.L01.AutoSize = true;
-            this.L01.Location = new System.Drawing.Point(32, 12);
-            this.L01.Name = "L01";
-            this.L01.Size = new System.Drawing.Size(14, 13);
-            this.L01.TabIndex = 21;
-            this.L01.Text = "X";
-            // 
-            // L08
-            // 
-            this.L08.AutoSize = true;
-            this.L08.Location = new System.Drawing.Point(12, 34);
-            this.L08.Name = "L08";
-            this.L08.Size = new System.Drawing.Size(14, 13);
-            this.L08.TabIndex = 20;
-            this.L08.Text = "X";
-            // 
-            // L00
-            // 
-            this.L00.AutoSize = true;
-            this.L00.Location = new System.Drawing.Point(12, 12);
-            this.L00.Name = "L00";
-            this.L00.Size = new System.Drawing.Size(14, 13);
-            this.L00.TabIndex = 19;
-            this.L00.Text = "X";
-            // 
-            // L1B
-            // 
-            this.L1B.AutoSize = true;
-            this.L1B.Location = new System.Drawing.Point(72, 81);
-            this.L1B.Name = "L1B";
-            this.L1B.Size = new System.Drawing.Size(14, 13);
-            this.L1B.TabIndex = 30;
-            this.L1B.Text = "X";
-            // 
-            // L13
-            // 
-            this.L13.AutoSize = true;
-            this.L13.Location = new System.Drawing.Point(72, 59);
-            this.L13.Name = "L13";
-            this.L13.Size = new System.Drawing.Size(14, 13);
-            this.L13.TabIndex = 29;
-            this.L13.Text = "X";
-            // 
-            // L1A
-            // 
-            this.L1A.AutoSize = true;
-            this.L1A.Location = new System.Drawing.Point(52, 81);
-            this.L1A.Name = "L1A";
-            this.L1A.Size = new System.Drawing.Size(14, 13);
-            this.L1A.TabIndex = 28;
-            this.L1A.Text = "X";
-            // 
-            // L12
-            // 
-            this.L12.AutoSize = true;
-            this.L12.Location = new System.Drawing.Point(52, 59);
-            this.L12.Name = "L12";
-            this.L12.Size = new System.Drawing.Size(14, 13);
-            this.L12.TabIndex = 27;
-            this.L12.Text = "X";
-            // 
-            // L1D
-            // 
-            this.L1D.AutoSize = true;
-            this.L1D.Location = new System.Drawing.Point(112, 81);
-            this.L1D.Name = "L1D";
-            this.L1D.Size = new System.Drawing.Size(14, 13);
-            this.L1D.TabIndex = 34;
-            this.L1D.Text = "X";
-            // 
-            // L15
-            // 
-            this.L15.AutoSize = true;
-            this.L15.Location = new System.Drawing.Point(112, 59);
-            this.L15.Name = "L15";
-            this.L15.Size = new System.Drawing.Size(14, 13);
-            this.L15.TabIndex = 33;
-            this.L15.Text = "X";
-            // 
-            // L1C
-            // 
-            this.L1C.AutoSize = true;
-            this.L1C.Location = new System.Drawing.Point(92, 81);
-            this.L1C.Name = "L1C";
-            this.L1C.Size = new System.Drawing.Size(14, 13);
-            this.L1C.TabIndex = 32;
-            this.L1C.Text = "X";
-            // 
-            // L14
-            // 
-            this.L14.AutoSize = true;
-            this.L14.Location = new System.Drawing.Point(92, 59);
-            this.L14.Name = "L14";
-            this.L14.Size = new System.Drawing.Size(14, 13);
-            this.L14.TabIndex = 31;
-            this.L14.Text = "X";
-            // 
-            // f2_Text
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(179, 107);
-            this.Controls.Add(this.L1D);
-            this.Controls.Add(this.L15);
-            this.Controls.Add(this.L1C);
-            this.Controls.Add(this.L14);
-            this.Controls.Add(this.L1B);
-            this.Controls.Add(this.L13);
-            this.Controls.Add(this.L1A);
-            this.Controls.Add(this.L12);
-            this.Controls.Add(this.L0B);
-            this.Controls.Add(this.L03);
-            this.Controls.Add(this.L0A);
-            this.Controls.Add(this.L02);
-            this.Controls.Add(this.L09);
-            this.Controls.Add(this.L01);
-            this.Controls.Add(this.L08);
-            this.Controls.Add(this.L00);
-            this.Controls.Add(this.L19);
-            this.Controls.Add(this.L11);
-            this.Controls.Add(this.L18);
-            this.Controls.Add(this.L10);
-            this.Controls.Add(this.L1F);
-            this.Controls.Add(this.L17);
-            this.Controls.Add(this.L1E);
-            this.Controls.Add(this.L16);
-            this.Controls.Add(this.L0F);
-            this.Controls.Add(this.L07);
-            this.Controls.Add(this.L0E);
-            this.Controls.Add(this.L06);
-            this.Controls.Add(this.L0D);
-            this.Controls.Add(this.L05);
-            this.Controls.Add(this.L0C);
-            this.Controls.Add(this.L04);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "f2_Text";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Special Characters";
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            components = new System.ComponentModel.Container();
+            Tip = new System.Windows.Forms.ToolTip(components);
+            TB_Text = new PKHeX.WinForms.Controls.RenderedString();
+            CB_Species = new System.Windows.Forms.ComboBox();
+            B_Cancel = new System.Windows.Forms.Button();
+            B_Save = new System.Windows.Forms.Button();
+            FLP_Characters = new System.Windows.Forms.FlowLayoutPanel();
+            FLP_Hex = new System.Windows.Forms.FlowLayoutPanel();
+            CB_Language = new System.Windows.Forms.ComboBox();
+            B_ApplyTrash = new System.Windows.Forms.Button();
+            GB_Trash = new System.Windows.Forms.GroupBox();
+            B_ClearTrash = new System.Windows.Forms.Button();
+            L_Generation = new System.Windows.Forms.Label();
+            NUD_Generation = new System.Windows.Forms.NumericUpDown();
+            L_Language = new System.Windows.Forms.Label();
+            L_Species = new System.Windows.Forms.Label();
+            L_String = new System.Windows.Forms.Label();
+            GB_Trash.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)NUD_Generation).BeginInit();
+            SuspendLayout();
+            // 
+            // Tip
+            // 
+            Tip.AutoPopDelay = 32767;
+            Tip.InitialDelay = 200;
+            Tip.ReshowDelay = 100;
+            // 
+            // TB_Text
+            // 
+            TB_Text.Location = new System.Drawing.Point(114, 14);
+            TB_Text.DisableInGameFont = false;
+            TB_Text.DisplayContext = Core.EntityContext.None;
+            TB_Text.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            TB_Text.Name = "TB_Text";
+            TB_Text.Size = new System.Drawing.Size(158, 25);
+            TB_Text.TabIndex = 35;
+            // 
+            // CB_Species
+            // 
+            CB_Species.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            CB_Species.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            CB_Species.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            CB_Species.FormattingEnabled = true;
+            CB_Species.Location = new System.Drawing.Point(89, 18);
+            CB_Species.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            CB_Species.Name = "CB_Species";
+            CB_Species.Size = new System.Drawing.Size(100, 25);
+            CB_Species.TabIndex = 36;
+            // 
+            // B_Cancel
+            // 
+            B_Cancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            B_Cancel.Location = new System.Drawing.Point(388, 208);
+            B_Cancel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            B_Cancel.Name = "B_Cancel";
+            B_Cancel.Size = new System.Drawing.Size(96, 32);
+            B_Cancel.TabIndex = 37;
+            B_Cancel.Text = "Cancel";
+            B_Cancel.UseVisualStyleBackColor = true;
+            B_Cancel.Click += B_Cancel_Click;
+            // 
+            // B_Save
+            // 
+            B_Save.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            B_Save.Location = new System.Drawing.Point(490, 208);
+            B_Save.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            B_Save.Name = "B_Save";
+            B_Save.Size = new System.Drawing.Size(96, 32);
+            B_Save.TabIndex = 38;
+            B_Save.Text = "Save";
+            B_Save.UseVisualStyleBackColor = true;
+            B_Save.Click += B_Save_Click;
+            // 
+            // FLP_Characters
+            // 
+            FLP_Characters.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            FLP_Characters.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            FLP_Characters.Location = new System.Drawing.Point(14, 145);
+            FLP_Characters.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            FLP_Characters.Name = "FLP_Characters";
+            FLP_Characters.Size = new System.Drawing.Size(368, 94);
+            FLP_Characters.TabIndex = 39;
+            // 
+            // FLP_Hex
+            // 
+            FLP_Hex.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            FLP_Hex.AutoScroll = true;
+            FLP_Hex.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            FLP_Hex.Location = new System.Drawing.Point(14, 44);
+            FLP_Hex.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            FLP_Hex.Name = "FLP_Hex";
+            FLP_Hex.Size = new System.Drawing.Size(368, 94);
+            FLP_Hex.TabIndex = 40;
+            FLP_Hex.Visible = false;
+            // 
+            // CB_Language
+            // 
+            CB_Language.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            CB_Language.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            CB_Language.FormattingEnabled = true;
+            CB_Language.Location = new System.Drawing.Point(89, 50);
+            CB_Language.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            CB_Language.Name = "CB_Language";
+            CB_Language.Size = new System.Drawing.Size(100, 25);
+            CB_Language.TabIndex = 41;
+            // 
+            // B_ApplyTrash
+            // 
+            B_ApplyTrash.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            B_ApplyTrash.Location = new System.Drawing.Point(7, 153);
+            B_ApplyTrash.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            B_ApplyTrash.Name = "B_ApplyTrash";
+            B_ApplyTrash.Size = new System.Drawing.Size(182, 27);
+            B_ApplyTrash.TabIndex = 42;
+            B_ApplyTrash.Text = "Apply Trash";
+            B_ApplyTrash.UseVisualStyleBackColor = true;
+            B_ApplyTrash.Click += B_ApplyTrash_Click;
+            // 
+            // GB_Trash
+            // 
+            GB_Trash.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            GB_Trash.Controls.Add(B_ClearTrash);
+            GB_Trash.Controls.Add(L_Generation);
+            GB_Trash.Controls.Add(NUD_Generation);
+            GB_Trash.Controls.Add(L_Language);
+            GB_Trash.Controls.Add(L_Species);
+            GB_Trash.Controls.Add(CB_Species);
+            GB_Trash.Controls.Add(B_ApplyTrash);
+            GB_Trash.Controls.Add(CB_Language);
+            GB_Trash.Location = new System.Drawing.Point(389, 14);
+            GB_Trash.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            GB_Trash.Name = "GB_Trash";
+            GB_Trash.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            GB_Trash.Size = new System.Drawing.Size(196, 188);
+            GB_Trash.TabIndex = 43;
+            GB_Trash.TabStop = false;
+            GB_Trash.Text = "Trash Byte Layers";
+            GB_Trash.Visible = false;
+            // 
+            // B_ClearTrash
+            // 
+            B_ClearTrash.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            B_ClearTrash.Location = new System.Drawing.Point(7, 119);
+            B_ClearTrash.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            B_ClearTrash.Name = "B_ClearTrash";
+            B_ClearTrash.Size = new System.Drawing.Size(182, 27);
+            B_ClearTrash.TabIndex = 47;
+            B_ClearTrash.Text = "Clear Trash";
+            B_ClearTrash.UseVisualStyleBackColor = true;
+            B_ClearTrash.Click += B_ClearTrash_Click;
+            // 
+            // L_Generation
+            // 
+            L_Generation.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            L_Generation.Location = new System.Drawing.Point(7, 77);
+            L_Generation.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            L_Generation.Name = "L_Generation";
+            L_Generation.Size = new System.Drawing.Size(120, 27);
+            L_Generation.TabIndex = 46;
+            L_Generation.Text = "Generation";
+            L_Generation.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // NUD_Generation
+            // 
+            NUD_Generation.Font = new System.Drawing.Font("Courier New", 8.25F);
+            NUD_Generation.Location = new System.Drawing.Point(134, 81);
+            NUD_Generation.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            NUD_Generation.Name = "NUD_Generation";
+            NUD_Generation.Size = new System.Drawing.Size(55, 20);
+            NUD_Generation.TabIndex = 45;
+            // 
+            // L_Language
+            // 
+            L_Language.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            L_Language.Location = new System.Drawing.Point(7, 50);
+            L_Language.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            L_Language.Name = "L_Language";
+            L_Language.Size = new System.Drawing.Size(75, 27);
+            L_Language.TabIndex = 44;
+            L_Language.Text = "Language";
+            L_Language.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // L_Species
+            // 
+            L_Species.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            L_Species.Location = new System.Drawing.Point(7, 18);
+            L_Species.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            L_Species.Name = "L_Species";
+            L_Species.Size = new System.Drawing.Size(75, 27);
+            L_Species.TabIndex = 43;
+            L_Species.Text = "Species";
+            L_Species.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // L_String
+            // 
+            L_String.Location = new System.Drawing.Point(10, 10);
+            L_String.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            L_String.Name = "L_String";
+            L_String.Size = new System.Drawing.Size(102, 27);
+            L_String.TabIndex = 44;
+            L_String.Text = "String";
+            L_String.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // TrashEditor
+            // 
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            ClientSize = new System.Drawing.Size(599, 253);
+            Controls.Add(L_String);
+            Controls.Add(GB_Trash);
+            Controls.Add(FLP_Hex);
+            Controls.Add(FLP_Characters);
+            Controls.Add(B_Cancel);
+            Controls.Add(B_Save);
+            Controls.Add(TB_Text);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            Icon = Properties.Resources.Icon;
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "TrashEditor";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            Text = "Special Characters";
+            GB_Trash.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)NUD_Generation).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
-
-        private System.Windows.Forms.Label L04;
-        private System.Windows.Forms.Label L0C;
-        private System.Windows.Forms.Label L0D;
-        private System.Windows.Forms.Label L05;
-        private System.Windows.Forms.Label L0E;
-        private System.Windows.Forms.Label L06;
-        private System.Windows.Forms.Label L0F;
-        private System.Windows.Forms.Label L07;
-        private System.Windows.Forms.Label L1E;
-        private System.Windows.Forms.Label L16;
-        private System.Windows.Forms.Label L1F;
-        private System.Windows.Forms.Label L17;
-        private System.Windows.Forms.Label L18;
-        private System.Windows.Forms.Label L10;
-        private System.Windows.Forms.Label L19;
-        private System.Windows.Forms.Label L11;
-        private System.Windows.Forms.Label L0B;
-        private System.Windows.Forms.Label L03;
-        private System.Windows.Forms.Label L0A;
-        private System.Windows.Forms.Label L02;
-        private System.Windows.Forms.Label L09;
-        private System.Windows.Forms.Label L01;
-        private System.Windows.Forms.Label L08;
-        private System.Windows.Forms.Label L00;
-        private System.Windows.Forms.Label L1B;
-        private System.Windows.Forms.Label L13;
-        private System.Windows.Forms.Label L1A;
-        private System.Windows.Forms.Label L12;
-        private System.Windows.Forms.Label L1D;
-        private System.Windows.Forms.Label L15;
-        private System.Windows.Forms.Label L1C;
-        private System.Windows.Forms.Label L14;
+        private PKHeX.WinForms.Controls.RenderedString TB_Text;
+        private System.Windows.Forms.ComboBox CB_Species;
+        private System.Windows.Forms.Button B_Cancel;
+        private System.Windows.Forms.Button B_Save;
+        private System.Windows.Forms.FlowLayoutPanel FLP_Characters;
+        private System.Windows.Forms.FlowLayoutPanel FLP_Hex;
+        private System.Windows.Forms.ComboBox CB_Language;
+        private System.Windows.Forms.Button B_ApplyTrash;
+        private System.Windows.Forms.GroupBox GB_Trash;
+        private System.Windows.Forms.Label L_Species;
+        private System.Windows.Forms.Label L_Language;
+        private System.Windows.Forms.NumericUpDown NUD_Generation;
+        private System.Windows.Forms.Label L_Generation;
+        private System.Windows.Forms.Button B_ClearTrash;
+        private System.Windows.Forms.Label L_String;
+        private System.Windows.Forms.ToolTip Tip;
     }
 }
